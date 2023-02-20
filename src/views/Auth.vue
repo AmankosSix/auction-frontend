@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h2>Auth View</h2>
-    <router-view />
-  </div>
+  <router-view />
 </template>
 
 <script lang="ts">
