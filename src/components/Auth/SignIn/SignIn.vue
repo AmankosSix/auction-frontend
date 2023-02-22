@@ -1,10 +1,11 @@
 <template>
   <v-container fluid>
-    <v-sheet width="300" class="mx-auto">
+    <v-sheet width="400" class="bg-blue-grey-lighten-5 mx-auto pa-5" rounded>
       <h4 class="text-h5 font-weight-bold mb-4 text-center">Authentication</h4>
       <v-form fast-fail>
         <v-text-field
-          v-model="form.email"
+          v-model="user.email"
+          id="email"
           label="Email"
           hint="Enter your email to access this website"
           clearable
@@ -12,7 +13,8 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="form.password"
+          v-model="user.password"
+          id="password"
           :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
           label="Password"
           type="input"
@@ -30,13 +32,17 @@
 
 <script lang="ts" setup>
 import { reactive } from 'vue'
+import { AuthService, SingIn, SingInResponse } from '@/service/AuthService'
+import { useStore } from 'vuex'
 
+const store = useStore()
 const show = false
 
-const form = reactive({
+const initUser: SingIn = {
   email: '',
   password: ''
-})
+}
+const user = reactive(initUser)
 
 const emailRules = [
   (value: never) => {
@@ -58,7 +64,11 @@ const passwordRules = [
   }
 ]
 
-const submit = () => {
-  console.log('it\'s submitted')
+async function submit () {
+  const aS = new AuthService()
+  const res = await aS.SignIn<SingInResponse>(user)
+  if ('accessToken' in res.response) {
+    console.log(res?.response?.accessToken)
+  }
 }
 </script>
