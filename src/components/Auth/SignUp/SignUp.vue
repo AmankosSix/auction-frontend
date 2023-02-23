@@ -7,7 +7,7 @@
     >
       <v-container>
         <v-text-field
-          v-model="form.name"
+          v-model="user.name"
           label="Your name"
           hint="Enter your name"
           clearable
@@ -15,7 +15,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="form.phone"
+          v-model="user.phone"
           label="Phone number"
           hint="Enter your phone number"
           clearable
@@ -23,7 +23,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="form.email"
+          v-model="user.email"
           label="Email"
           hint="Enter your email"
           clearable
@@ -31,13 +31,12 @@
         ></v-text-field>
 
         <v-text-field
-          v-model="form.password"
+          v-model="user.password"
           label="Password"
           type="password"
           hint="Enter your password"
           clearable
           :rules="passwordRules"
-          @click:append="show = !show"
         ></v-text-field>
       </v-container>
 
@@ -47,8 +46,7 @@
         <v-spacer></v-spacer>
 
         <v-btn color="success" @click="submit">
-          Complete Registration
-
+          Sign up
           <v-icon icon="mdi-chevron-right" end></v-icon>
         </v-btn>
       </v-card-actions>
@@ -58,15 +56,15 @@
 
 <script lang="ts" setup>
 import { reactive } from 'vue'
+import { AuthService, SignUp, SignUpResponse } from '@/service/AuthService'
 
-const show = false
-
-const form = reactive({
+const initUser: SignUp = {
   name: '',
-  phone: '',
   email: '',
+  phone: '',
   password: ''
-})
+}
+const user = reactive(initUser)
 
 const nameRules = [
   (value: never) => {
@@ -109,7 +107,8 @@ const passwordRules = [
   }
 ]
 
-const submit = () => {
-  console.log('it\'s submitted', form)
+async function submit () {
+  const aS = new AuthService()
+  await aS.SignUp<SignUpResponse>(user)
 }
 </script>
