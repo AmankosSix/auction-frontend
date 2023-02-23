@@ -1,16 +1,9 @@
-import { Snackbar } from '@/store/common/types'
-
-const defaultSnackbar: Snackbar = {
-  status: false,
-  text: '',
-  timeout: 0,
-  color: ''
-}
+import { Snackbar } from './types'
 
 export type State = {
-  snackbar: Snackbar
+  snackbars: Snackbar[]
 }
 
 export const state: State = {
-  snackbar: defaultSnackbar
+  snackbars: []
 }

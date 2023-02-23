@@ -13,14 +13,14 @@ type CommonActionContext = {
 } & Omit<ActionContext<State, RootState>, 'commit'>
 
 export interface Actions {
-  [CMT.SET_SNACKBAR_DATA](
+  [CMT.SET_SNACKBAR](
     { commit }: CommonActionContext,
     snackbar: Snackbar
   ): void
 }
 
 export const actions: ActionTree<State, RootState> & Actions = {
-  [CMT.SET_SNACKBAR_DATA] ({ commit }, snackbar: Snackbar) {
-    commit(CMT.SET_SNACKBAR_DATA, snackbar)
+  [CMT.SET_SNACKBAR] ({ commit }, snackbar: Snackbar) {
+    commit(CMT.SET_SNACKBAR, snackbar)
   }
 }

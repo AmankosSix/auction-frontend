@@ -1,6 +1,8 @@
 export interface Snackbar {
-  status: boolean,
-  text: string,
-  timeout: number,
-  color: string
+  id?: number,
+  show?: boolean,
+  color: string,
+  message: string,
+  icon?: string,
+  timer?: number
 }

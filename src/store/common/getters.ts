@@ -1,12 +1,12 @@
 import { GetterTree } from 'vuex'
-import { Snackbar } from '@/store/common/types'
+import { Snackbar } from './types'
 import { RootState } from '@/store'
 import { State } from './state'
 
 export type Getters = {
-  snackbar(state: State): Snackbar
+  snackbars(state: State): Snackbar[]
 }
 
 export const getters: GetterTree<State, RootState> & Getters = {
-  snackbar: (state) => state.snackbar
+  snackbars: (state) => state.snackbars
 }

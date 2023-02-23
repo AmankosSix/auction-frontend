@@ -1,15 +1,17 @@
 <template>
   <v-snackbar
-    v-model="notify.show"
-    :timeout="notify.timer"
+    v-for="snackbar in snackbars"
+    :key="snackbar.id"
+    v-model="snackbar.show"
+    :timeout="snackbar.timer"
   >
-    {{ notify.message }}
+    {{ snackbar.message }}
 
     <template v-slot:actions>
       <v-btn
-        :color="notify.color"
+        :color="snackbar.color"
         variant="text"
-        @click="reset"
+        @click="removeSnackbar(snackbar.id)"
       >
         Close
       </v-btn>
@@ -18,34 +20,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { computed } from 'vue'
+import { useStore } from '@/store'
+import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
 
-type Notify = {
-  show: boolean,
-  color: string,
-  message: string,
-  icon: string,
-  timer: number
-}
-
-const defaultConfig = {
-  show: false,
-  color: 'green',
-  message: '',
-  icon: '',
-  timer: 3000
-}
-
-let notify: Notify = reactive({
-  ...defaultConfig
-})
-
-const reset = () => {
-  notify = { ...defaultConfig }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const show = (cfg: Notify) => {
-  notify = { ...cfg }
-}
+const store = useStore()
+const snackbars = computed(() => store.getters.snackbars)
+const removeSnackbar = (id: number) => store.commit(CMT.RESET_SNACKBAR, id)
 </script>

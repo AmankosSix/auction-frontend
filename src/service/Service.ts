@@ -1,13 +1,19 @@
 import { ApiResponse, ApiError, ApiMethod } from './types'
+import { useStore } from '@/store'
+import { CommonMutationTypes as cmt } from '@/store/common/mutations-types'
 
 const domain = process.env.VUE_APP_HTTP_SERVER || ''
 
 export default class Service {
   private apiV1 = `${domain}/api/v1`
+  private token = localStorage.getItem('token') || ''
   private headers = {
     Accept: 'application/json',
+    Authorization: `Bearer ${this.token}`,
     'Content-Type': 'application/json'
   }
+
+  protected store = useStore()
 
   public async request <TResponse> (
     url: string,
@@ -29,7 +35,7 @@ export default class Service {
       const error: ApiResponse<ApiError> = {
         response: {
           errorCode: 0,
-          description: 'Network Error!'
+          description: 'ERROR! Connection with server refused, please try again later'
         },
         result: 'failure'
       }
@@ -38,6 +44,11 @@ export default class Service {
         error.response.errorCode = response.status
         error.response.description = response.statusText
       }
+
+      this.store.commit(cmt.SET_SNACKBAR, {
+        color: 'red',
+        message: error?.response?.description
+      })
 
       return error
     }

@@ -66,7 +66,7 @@ async function submit () {
   const aS = new AuthService()
   const res = await aS.SignIn<SingInResponse>(user)
   if ('accessToken' in res.response) {
-    console.log(res?.response?.accessToken)
+    localStorage.setItem('token', res.response.accessToken)
   }
 }
 </script>

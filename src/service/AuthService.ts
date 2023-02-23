@@ -1,10 +1,6 @@
 import Service from './Service'
 import { ApiError, ApiResponse } from '@/service/types'
-import { useStore } from '@/store'
-import { Snackbar } from '@/store/common/types'
 import { CommonMutationTypes as cmt } from '@/store/common/mutations-types'
-
-const store = useStore()
 
 export type Registration = {
   Name: string,
@@ -31,13 +27,12 @@ export class AuthService extends Service {
 
     const user: ApiResponse<SingInResponse | ApiError> = await this.request<SingInResponse>(this.signIn, config)
 
-    const snackbar: Snackbar = {
-      status: true,
-      text: 'You authenticated successfully',
-      timeout: 2,
-      color: 'green'
+    if (user.result === 'success') {
+      this.store.commit(cmt.SET_SNACKBAR, {
+        color: 'green',
+        message: 'You authenticated successfully'
+      })
     }
-    store.commit(cmt.SET_SNACKBAR_DATA, snackbar)
 
     return user
   }

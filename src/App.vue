@@ -39,7 +39,7 @@
         <router-view />
       </v-main>
 
-      <v-notify ref="notify" />
+      <v-notify />
     </v-layout>
   </v-card>
 </template>
