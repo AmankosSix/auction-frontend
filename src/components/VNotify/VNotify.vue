@@ -4,7 +4,15 @@
     :key="snackbar.id"
     v-model="snackbar.show"
     :timeout="snackbar.timer"
+    color="blue-grey-darken-3"
   >
+    <v-icon
+      v-if="snackbar.icon"
+      :icon="`mdi-${snackbar.icon}`"
+      start
+      :color="snackbar.color"
+    ></v-icon>
+
     {{ snackbar.message }}
 
     <template v-slot:actions>

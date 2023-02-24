@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="bg-blue-grey-lighten-5 mx-auto pa-5" rounded>
+  <v-sheet class="bg-blue-grey-lighten-5 mx-auto pa-5 h-100" rounded>
     <v-card
       class="mx-auto"
       max-width="344"
@@ -7,42 +7,49 @@
     >
       <v-container>
         <v-text-field
-          v-model="user.name"
+          v-model="name.value.value"
+          :error-messages="name.errorMessage.value"
           label="Your name"
           hint="Enter your name"
           clearable
-          :rules="nameRules"
         ></v-text-field>
 
         <v-text-field
-          v-model="user.phone"
+          v-model="phone.value.value"
+          :error-messages="phone.errorMessage.value"
           label="Phone number"
           hint="Enter your phone number"
+          prefix="+7"
           clearable
-          :rules="phoneRules"
         ></v-text-field>
 
         <v-text-field
-          v-model="user.email"
+          v-model="email.value.value"
+          :error-messages="email.errorMessage.value"
           label="Email"
           hint="Enter your email"
           clearable
-          :rules="emailRules"
         ></v-text-field>
 
         <v-text-field
-          v-model="user.password"
+          v-model="password.value.value"
+          :error-messages="password.errorMessage.value"
           label="Password"
           type="password"
           hint="Enter your password"
           clearable
-          :rules="passwordRules"
         ></v-text-field>
       </v-container>
 
       <v-divider></v-divider>
 
       <v-card-actions>
+        <v-btn color="grey" @click="handleReset">
+          <v-icon icon="mdi-close" start></v-icon>
+
+          Clear
+        </v-btn>
+
         <v-spacer></v-spacer>
 
         <v-btn color="success" @click="submit">
@@ -55,60 +62,61 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
 import { AuthService, SignUp, SignUpResponse } from '@/service/AuthService'
+import { useField, useForm } from 'vee-validate'
 
-const initUser: SignUp = {
-  name: '',
-  email: '',
-  phone: '',
-  password: ''
-}
-const user = reactive(initUser)
+const { handleSubmit, handleReset } = useForm({
+  validationSchema: {
+    name (value: string) {
+      if (value?.length > 64) {
+        return 'Name needs to be at maximum 64 characters.'
+      }
 
-const nameRules = [
-  (value: never) => {
-    if (value) return true
+      if (value?.length >= 2) {
+        return true
+      }
 
-    return 'Name is required.'
+      return 'Name needs to be at least 2 characters.'
+    },
+    email (value: string) {
+      if (value?.length > 64) {
+        return 'Email needs to be at maximum 64 characters.'
+      }
+
+      if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) {
+        return true
+      }
+
+      return 'Must be a valid e-mail.'
+    },
+    phone (value: string) {
+      if (value?.length === 10 && /[0-9-]+/.test(value)) return true
+
+      return 'Phone number needs to be 10 digits.'
+    },
+    password (value: string) {
+      if (value?.length > 64) {
+        return 'Password needs to be at maximum 64 characters.'
+      }
+
+      if (value?.length >= 8) {
+        return true
+      }
+
+      return 'Password needs to be at least 8 characters.'
+    }
   }
-]
+})
 
-const phoneRules = [
-  (value: never) => {
-    if (value) return true
+const name = useField('name')
+const email = useField('email')
+const phone = useField('phone')
+const password = useField('password')
 
-    return 'Phone is required.'
-  }
-]
-
-const emailRules = [
-  (value: never) => {
-    if (value) return true
-
-    return 'E-mail is required.'
-  },
-  (value: string) => {
-    if (/.+@.+\..+/.test(value)) return true
-
-    return 'E-mail must be valid.'
-  }
-]
-
-const passwordRules = [
-  (value: never) => {
-    if (value) return true
-
-    return 'Password is required.'
-  },
-  (value: string) => {
-    if (/[^0-9]/.test(value)) return true
-    return 'Last name can not contain digits.'
-  }
-]
-
-async function submit () {
+const submit = handleSubmit(async values => {
+  const { name, email, phone, password } = values
+  const user: SignUp = { name, email, phone, password }
   const aS = new AuthService()
   await aS.SignUp<SignUpResponse>(user)
-}
+})
 </script>

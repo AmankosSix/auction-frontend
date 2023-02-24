@@ -47,7 +47,8 @@ export default class Service {
 
       this.store.commit(cmt.SET_SNACKBAR, {
         color: 'red',
-        message: error?.response?.description
+        message: error?.response?.description,
+        icon: 'alert-circle-outline'
       })
 
       return error

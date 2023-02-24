@@ -49,7 +49,8 @@ export class AuthService extends Service {
     if (user.result === 'success') {
       this.store.commit(cmt.SET_SNACKBAR, {
         color: 'green',
-        message: 'You authenticated successfully'
+        message: 'You authenticated successfully',
+        icon: 'check-circle-outline'
       })
     }
 
