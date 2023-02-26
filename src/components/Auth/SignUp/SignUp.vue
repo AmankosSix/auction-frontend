@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="bg-blue-grey-lighten-5 mx-auto pa-5 h-100" rounded>
+  <v-sheet class="bg-blue-grey-lighten-5 mx-auto pa-5 h-100">
     <v-card
       class="mx-auto"
       max-width="344"

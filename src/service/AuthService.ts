@@ -1,6 +1,8 @@
 import Service from './Service'
-import { ApiError, ApiResponse } from '@/service/types'
-import { CommonMutationTypes as cmt } from '@/store/common/mutations-types'
+import { ApiError, ApiResponse, ApiResult } from '@/service/types'
+import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
+import { UserMutationTypes as UMT } from '@/store/user/mutations-types'
+import { GetUserInfo } from '@/helpers/authInit'
 
 export type SignUp = {
   name: string,
@@ -25,6 +27,7 @@ export interface SignInResponse {
 export class AuthService extends Service {
   private signUp = '/auth/sign-up'
   private signIn = '/auth/sign-in'
+  private userInfo = '/user/info'
 
   async SignUp<SignUpResponse> (body: SignUp): Promise<ApiResponse<SignUpResponse | ApiError>> {
     const config = this.config<SignUp>('POST', body)
@@ -32,7 +35,7 @@ export class AuthService extends Service {
     const user: ApiResponse<SignUpResponse | ApiError> = await this.request<SignUpResponse>(this.signUp, config)
 
     if (user.result === 'success') {
-      this.store.commit(cmt.SET_SNACKBAR, {
+      this.store.commit(CMT.SET_SNACKBAR, {
         color: 'green',
         message: 'You registered successfully'
       })
@@ -41,15 +44,33 @@ export class AuthService extends Service {
     return user
   }
 
-  async SignIn<SignInResponse> (body: SignIn): Promise<ApiResponse<SignInResponse | ApiError>> {
+  async SignIn (body: SignIn): Promise<ApiResult> {
     const config = this.config<SignIn>('POST', body)
 
     const user: ApiResponse<SignInResponse | ApiError> = await this.request<SignInResponse>(this.signIn, config)
 
-    if (user.result === 'success') {
-      this.store.commit(cmt.SET_SNACKBAR, {
+    if (!('errorCode' in user.response)) {
+      this.store.commit(CMT.SET_SNACKBAR, {
         color: 'green',
         message: 'You authenticated successfully',
+        icon: 'check-circle-outline'
+      })
+      this.store.commit(UMT.SET_TOKEN, user.response.accessToken)
+      await GetUserInfo()
+    }
+
+    return user.result
+  }
+
+  async UserInfo<T> (): Promise<ApiResponse<T | ApiError>> {
+    const config = this.config<SignIn>('GET')
+
+    const user: ApiResponse<T | ApiError> = await this.request<T>(this.userInfo, config)
+
+    if (user.result === 'success') {
+      this.store.commit(CMT.SET_SNACKBAR, {
+        color: 'green',
+        message: 'User info successfully received',
         icon: 'check-circle-outline'
       })
     }

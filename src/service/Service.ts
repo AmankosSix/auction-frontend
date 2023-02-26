@@ -5,15 +5,14 @@ import { CommonMutationTypes as cmt } from '@/store/common/mutations-types'
 const domain = process.env.VUE_APP_HTTP_SERVER || ''
 
 export default class Service {
+  protected store = useStore()
   private apiV1 = `${domain}/api/v1`
-  private token = localStorage.getItem('token') || ''
+  private token = this.store.getters.token
   private headers = {
     Accept: 'application/json',
     Authorization: `Bearer ${this.token}`,
     'Content-Type': 'application/json'
   }
-
-  protected store = useStore()
 
   public async request <TResponse> (
     url: string,
@@ -55,7 +54,7 @@ export default class Service {
     }
   }
 
-  public config<T> (method: ApiMethod, body: T): RequestInit {
+  public config<T> (method: ApiMethod, body?: T): RequestInit {
     return {
       headers: this.headers,
       method,

@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="bg-blue-grey-lighten-5 mx-auto pa-5 h-100" rounded>
+  <v-sheet class="bg-blue-grey-lighten-5 mx-auto pa-5 h-100">
     <v-card
       class="mx-auto"
       max-width="344"
@@ -50,8 +50,11 @@
 </template>
 
 <script lang="ts" setup>
-import { AuthService, SignIn, SignInResponse } from '@/service/AuthService'
+import { AuthService, SignIn } from '@/service/AuthService'
 import { useField, useForm } from 'vee-validate'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -87,9 +90,9 @@ const submit = handleSubmit(async values => {
   const { email, password } = values
   const user: SignIn = { email, password }
   const aS = new AuthService()
-  const res = await aS.SignIn<SignInResponse>(user)
-  if ('accessToken' in res.response) {
-    localStorage.setItem('token', res.response.accessToken)
+  const status = await aS.SignIn(user)
+  if (status === 'success') {
+    await router.push({ name: 'HomeComponent' })
   }
 })
 </script>
