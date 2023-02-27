@@ -38,11 +38,18 @@
 import { computed, reactive } from 'vue'
 import { useStore } from '@/store'
 import { Logout } from '@/helpers/authInit'
+import { useRouter } from 'vue-router'
 
 const store = useStore()
+const router = useRouter()
 
 const user = computed(() => store.getters.user).value
 const isAuthenticated = computed(() => store.getters.isAuthenticated).value
+
+const userLogout = () => {
+  router.push({ name: 'SignIn' })
+  Logout()
+}
 
 const navItems = reactive([
   {
@@ -77,11 +84,10 @@ const navItems = reactive([
         title: 'Log out',
         icon: 'mdi-logout',
         path: '',
-        event: Logout,
+        event: userLogout,
         hide: isAuthenticated
       }
     ]
   }
 ])
-
 </script>

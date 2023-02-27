@@ -1,4 +1,4 @@
-import { ApiResponse, ApiError, ApiMethod } from './types'
+import { ApiError, ApiMethod, ApiResponse } from './types'
 import { useStore } from '@/store'
 import { CommonMutationTypes as cmt } from '@/store/common/mutations-types'
 
@@ -21,15 +21,13 @@ export default class Service {
     let response
     try {
       response = await fetch(`${this.apiV1}${url}`, config)
-      if (!response.ok) throw response.statusText
+      if (!response.ok) throw response
 
       const json = await response.json()
-      const result: ApiResponse<TResponse> = {
+      return {
         response: json,
         result: 'success'
       }
-
-      return result
     } catch (e) {
       const error: ApiResponse<ApiError> = {
         response: {

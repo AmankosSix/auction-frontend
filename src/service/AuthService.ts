@@ -29,10 +29,10 @@ export class AuthService extends Service {
   private signIn = '/auth/sign-in'
   private userInfo = '/user/info'
 
-  async SignUp<SignUpResponse> (body: SignUp): Promise<ApiResponse<SignUpResponse | ApiError>> {
+  async SignUp<T> (body: SignUp): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<SignUp>('POST', body)
 
-    const user: ApiResponse<SignUpResponse | ApiError> = await this.request<SignUpResponse>(this.signUp, config)
+    const user: ApiResponse<T | ApiError> = await this.request<T>(this.signUp, config)
 
     if (user.result === 'success') {
       this.store.commit(CMT.SET_SNACKBAR, {

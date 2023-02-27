@@ -1,16 +1,27 @@
 <template>
-  <v-toolbar-title>Auction Frontend</v-toolbar-title>
+  <router-link :to="{ name: 'HomeComponent' }">
+    <v-img
+      :src="logo"
+      height="27"
+      max-width="255"
+      min-width="200"
+      class="ml-2"
+    ></v-img>
+  </router-link>
+
+  <v-spacer></v-spacer>
 
   <v-btn v-if="!isMobile" class="mx-4" icon="mdi-menu" @click="$emit('update:modelValue', !modelValue)"></v-btn>
 </template>
 
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue'
+import logo from '@/assets/images/logo-white.svg'
 
-defineProps({
-  modelValue: Boolean,
-  isMobile: Boolean
-})
+defineProps<{
+  modelValue: boolean
+  isMobile: boolean
+}>()
 
 defineEmits(['update:modelValue'])
 </script>

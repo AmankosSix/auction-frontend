@@ -1,5 +1,5 @@
 <template>
-  <v-breadcrumbs :items="crumbs" class="bg-blue-grey-lighten-2">
+  <v-breadcrumbs :items="state.bc" class="bg-blue-grey-lighten-2">
     <template v-slot:title="{ item }">
       {{ item.text }}
     </template>
@@ -18,16 +18,17 @@ interface Breadcrumb {
   text: string | unknown
 }
 
-const state = reactive({
-  crumbs: []
-})
+const crumbs: Breadcrumb[] = []
 
-watch(() => route.name, SetCrumbs)
+const state = reactive({ bc: crumbs })
+
+// watch(() => route.name, SetCrumbs)
+watch(() => route.name, () => SetCrumbs())
 
 function SetCrumbs () {
   const pathArray = route.path.split('/')
   pathArray.shift()
-  state.crumbs = pathArray.reduce((bcArr: Breadcrumb[], path: string, idx: number) => {
+  state.bc = pathArray.reduce((bcArr: Breadcrumb[], path: string, idx: number) => {
     bcArr.push({
       path: path,
       to: bcArr[idx - 1]

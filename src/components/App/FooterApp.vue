@@ -5,12 +5,14 @@
       <v-col cols="12" sm="6" class="py-0">
         <div class="d-flex justify-sm-end justify-center">
           <v-btn
-            v-for="icon in socialNetworkIcons"
+            v-for="{icon, link} in SN"
             :key="icon"
             class="mx-4"
             :icon="icon"
             size="small"
             variant="plain"
+            :href="link"
+            target="_blank"
           ></v-btn>
         </div>
       </v-col>
@@ -23,9 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-const socialNetworkIcons = [
-  'mdi-linkedin',
-  'mdi-github',
-  'mdi-instagram'
-]
+const socialNetworks = ['linkedin', 'github', 'instagram']
+
+const SN = socialNetworks.map(el => {
+  console.log(process.env.VUE_APP_INSTAGRAM)
+  return {
+    icon: `mdi-${el}`,
+    link: process.env[`VUE_APP_${el.toUpperCase()}`] || ''
+  }
+})
 </script>

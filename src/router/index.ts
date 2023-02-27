@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'HomeComponent',
         component: () => import('@/components/Home/HomeComponent.vue'),
         meta: {
-          breadCrumb: 'Home como'
+          breadCrumb: 'Main'
         }
       }
     ]
