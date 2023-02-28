@@ -1,8 +1,5 @@
 import Service from './Service'
-import { ApiError, ApiResponse, ApiResult } from '@/service/types'
-import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
-import { UserMutationTypes as UMT } from '@/store/user/mutations-types'
-import { GetUserInfo } from '@/helpers/authInit'
+import { ApiError, ApiResponse } from '@/service/types'
 
 export type SignUp = {
   name: string,
@@ -34,46 +31,21 @@ export class AuthService extends Service {
 
     const user: ApiResponse<T | ApiError> = await this.request<T>(this.signUp, config)
 
-    if (user.result === 'success') {
-      this.store.commit(CMT.SET_SNACKBAR, {
-        color: 'green',
-        message: 'You registered successfully'
-      })
-    }
-
     return user
   }
 
-  async SignIn (body: SignIn): Promise<ApiResult> {
+  async SignIn<T> (body: SignIn): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<SignIn>('POST', body)
 
-    const user: ApiResponse<SignInResponse | ApiError> = await this.request<SignInResponse>(this.signIn, config)
+    const res: ApiResponse<T | ApiError> = await this.request<T>(this.signIn, config)
 
-    if (!('errorCode' in user.response)) {
-      this.store.commit(CMT.SET_SNACKBAR, {
-        color: 'green',
-        message: 'You authenticated successfully',
-        icon: 'check-circle-outline'
-      })
-      this.store.commit(UMT.SET_TOKEN, user.response.accessToken)
-      await GetUserInfo()
-    }
-
-    return user.result
+    return res
   }
 
   async UserInfo<T> (): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<SignIn>('GET')
 
     const user: ApiResponse<T | ApiError> = await this.request<T>(this.userInfo, config)
-
-    if (user.result === 'success') {
-      this.store.commit(CMT.SET_SNACKBAR, {
-        color: 'green',
-        message: 'User info successfully received',
-        icon: 'check-circle-outline'
-      })
-    }
 
     return user
   }

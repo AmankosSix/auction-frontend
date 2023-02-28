@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-app class="h-screen">
+    <v-app>
       <v-app-bar color="blue-grey" class="justify-space-between">
-        <v-header-app v-model="sidebar" :isMobile="mdAndUp" />
+        <v-header-app v-model="sidebar" />
       </v-app-bar>
 
       <v-footer app class="d-flex flex-column pa-0">

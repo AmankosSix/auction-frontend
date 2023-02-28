@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import AuthView from '@/views/AuthView.vue'
+import { useStore } from '@/store'
+
+const store = useStore()
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,17 +25,26 @@ const routes: Array<RouteRecordRaw> = [
     ]
   },
   {
-    path: '/auth',
+    path: '/account',
     name: 'AuthView',
     component: AuthView,
     meta: {
-      breadCrumb: 'Auth'
+      breadCrumb: 'Profile'
     },
     children: [
       {
+        path: '',
+        name: 'UserProfile',
+        component: () => import('@/components/Account/Profile/UserProfile.vue'),
+        meta: {
+          authRequired: true,
+          breadCrumb: 'Username'
+        }
+      },
+      {
         path: 'sign-in',
         name: 'SignIn',
-        component: () => import('@/components/Auth/SignIn/SignIn.vue'),
+        component: () => import('@/components/Account/SignIn/SignIn.vue'),
         meta: {
           breadCrumb: 'Sign In'
         }
@@ -40,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'sign-up',
         name: 'SignUp',
-        component: () => import('@/components/Auth/SignUp/SignUp.vue'),
+        component: () => import('@/components/Account/SignUp/SignUp.vue'),
         meta: {
           breadCrumb: 'Sign Up'
         }
@@ -52,6 +64,16 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.meta?.authRequired === true) {
+    if (store.getters.isAuthenticated) {
+      return next()
+    }
+    return next({ name: 'SignIn' })
+  }
+  return next()
 })
 
 export default router

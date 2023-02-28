@@ -25,6 +25,10 @@
             hint="Enter your password to access this website"
             clearable
           ></v-text-field>
+
+          <p class="font-weight-light">
+            New to Car Auction? <router-link :to="{ name: 'SignUp' }" class="text-blue-grey-darken-1 text-decoration-none">Create an account.</router-link>
+          </p>
         </v-container>
 
         <v-divider></v-divider>
@@ -50,10 +54,15 @@
 </template>
 
 <script lang="ts" setup>
-import { AuthService, SignIn } from '@/service/AuthService'
+import { AuthService, SignIn, SignInResponse } from '@/service/AuthService'
 import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
+import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
+import { UserMutationTypes as UMT } from '@/store/user/mutations-types'
+import { GetUserInfo } from '@/helpers/authInit'
+import { useStore } from '@/store'
 
+const store = useStore()
 const router = useRouter()
 
 const { handleSubmit, handleReset } = useForm({
@@ -90,8 +99,18 @@ const submit = handleSubmit(async values => {
   const { email, password } = values
   const user: SignIn = { email, password }
   const aS = new AuthService()
-  const status = await aS.SignIn(user)
-  if (status === 'success') {
+  const res = await aS.SignIn<SignInResponse>(user)
+  if (!('errorCode' in res.response)) {
+    await store.commit(CMT.SET_SNACKBAR, {
+      color: 'green',
+      message: 'You authenticated successfully',
+      icon: 'check-circle-outline'
+    })
+
+    await store.commit(UMT.SET_TOKEN, res.response.accessToken)
+
+    await GetUserInfo()
+
     await router.push({ name: 'HomeComponent' })
   }
 })

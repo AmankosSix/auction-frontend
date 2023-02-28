@@ -22,7 +22,6 @@ const crumbs: Breadcrumb[] = []
 
 const state = reactive({ bc: crumbs })
 
-// watch(() => route.name, SetCrumbs)
 watch(() => route.name, () => SetCrumbs())
 
 function SetCrumbs () {

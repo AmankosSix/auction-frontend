@@ -11,7 +11,7 @@
 
   <v-spacer></v-spacer>
 
-  <v-btn v-if="!isMobile" class="mx-4" icon="mdi-menu" @click="$emit('update:modelValue', !modelValue)"></v-btn>
+  <v-btn class=".d-flex .d-sm-none" icon="mdi-menu" @click="$emit('update:modelValue', !modelValue)"></v-btn>
 </template>
 
 <script lang="ts" setup>
@@ -20,7 +20,6 @@ import logo from '@/assets/images/logo-white.svg'
 
 defineProps<{
   modelValue: boolean
-  isMobile: boolean
 }>()
 
 defineEmits(['update:modelValue'])

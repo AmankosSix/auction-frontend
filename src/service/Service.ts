@@ -7,10 +7,8 @@ const domain = process.env.VUE_APP_HTTP_SERVER || ''
 export default class Service {
   protected store = useStore()
   private apiV1 = `${domain}/api/v1`
-  private token = this.store.getters.token
   private headers = {
     Accept: 'application/json',
-    Authorization: `Bearer ${this.token}`,
     'Content-Type': 'application/json'
   }
 
@@ -54,7 +52,10 @@ export default class Service {
 
   public config<T> (method: ApiMethod, body?: T): RequestInit {
     return {
-      headers: this.headers,
+      headers: {
+        ...this.headers,
+        Authorization: `Bearer ${this.store.getters.token}`
+      },
       method,
       body: JSON.stringify(body)
     }

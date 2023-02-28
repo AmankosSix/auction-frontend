@@ -39,6 +39,10 @@
           hint="Enter your password"
           clearable
         ></v-text-field>
+
+        <p class="font-weight-light">
+          Already have an account? <router-link :to="{ name: 'SignIn' }" class="text-blue-grey-darken-1 text-decoration-none">Sign in.</router-link>
+        </p>
       </v-container>
 
       <v-divider></v-divider>
@@ -64,6 +68,12 @@
 <script lang="ts" setup>
 import { AuthService, SignUp, SignUpResponse } from '@/service/AuthService'
 import { useField, useForm } from 'vee-validate'
+import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
+import { useStore } from '@/store'
+import { useRouter } from 'vue-router'
+
+const store = useStore()
+const router = useRouter()
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -117,6 +127,14 @@ const submit = handleSubmit(async values => {
   const { name, email, phone, password } = values
   const user: SignUp = { name, email, phone, password }
   const aS = new AuthService()
-  await aS.SignUp<SignUpResponse>(user)
+  const res = await aS.SignUp<SignUpResponse>(user)
+  if (res.result === 'success') {
+    await router.push({ name: 'SignIn' })
+
+    await store.commit(CMT.SET_SNACKBAR, {
+      color: 'green',
+      message: 'You registered successfully'
+    })
+  }
 })
 </script>

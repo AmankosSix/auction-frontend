@@ -28,7 +28,6 @@
 const socialNetworks = ['linkedin', 'github', 'instagram']
 
 const SN = socialNetworks.map(el => {
-  console.log(process.env.VUE_APP_INSTAGRAM)
   return {
     icon: `mdi-${el}`,
     link: process.env[`VUE_APP_${el.toUpperCase()}`] || ''

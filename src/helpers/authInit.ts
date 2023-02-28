@@ -15,10 +15,12 @@ export interface User {
 
 export async function GetUserInfo () {
   try {
+    if (!store.getters.token) return
+
     const user = await aS.UserInfo<User>()
-    if ('errorCode' in user.response) {
-      throw user
-    }
+
+    if ('errorCode' in user.response) throw user
+
     store.commit(UMT.SET_USER, user.response)
   } catch (e) {
     store.commit(UMT.RESET_USER)
@@ -26,5 +28,5 @@ export async function GetUserInfo () {
 }
 
 export async function Logout () {
-  store.commit(UMT.RESET_USER)
+  await store.commit(UMT.RESET_USER)
 }

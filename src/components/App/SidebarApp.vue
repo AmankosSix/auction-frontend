@@ -13,9 +13,16 @@
           ></v-list-item>
         </template>
 
-        <template v-for="{title, icon, path, hide} in nav.children" :key="path">
+        <template v-for="{title, icon, path, hide, event} in nav.children" :key="path">
           <v-list-item
-            v-if="hide"
+            v-if="hide && event"
+            :title="title"
+            :prepend-icon="icon"
+            :value="title"
+            @click="event"
+          ></v-list-item>
+          <v-list-item
+            v-else-if="hide"
             :title="title"
             :prepend-icon="icon"
             :value="title"
@@ -35,59 +42,64 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue'
+import { computed } from 'vue'
 import { useStore } from '@/store'
 import { Logout } from '@/helpers/authInit'
 import { useRouter } from 'vue-router'
 
+interface Navigation {
+  title: string,
+  icon?: string,
+  path?: string,
+  hide?: boolean
+  event?: () => void,
+  children?: Navigation[]
+}
+
 const store = useStore()
 const router = useRouter()
 
-const user = computed(() => store.getters.user).value
-const isAuthenticated = computed(() => store.getters.isAuthenticated).value
-
 const userLogout = () => {
-  router.push({ name: 'SignIn' })
   Logout()
+  router.push({ name: 'SignIn' })
 }
 
-const navItems = reactive([
+const navItems = computed<Navigation[]>(() => ([
   {
     title: 'Home',
     icon: 'mdi-home',
     path: '/'
   },
   {
-    title: user?.name || 'Auth',
+    title: store.getters.user?.name || 'Account',
     icon: 'mdi-account',
-    path: '/auth',
+    path: '/account',
     children: [
       {
         title: 'Sign In',
         icon: 'mdi-login',
         path: '/sign-in',
-        hide: !isAuthenticated
+        hide: !store.getters.isAuthenticated
       },
       {
         title: 'Sign Up',
         icon: 'mdi-account-plus-outline',
         path: '/sign-up',
-        hide: !isAuthenticated
+        hide: !store.getters.isAuthenticated
       },
       {
         title: 'Profile',
         icon: 'mdi-badge-account',
-        path: '/sign-up',
-        hide: isAuthenticated
+        path: '',
+        hide: store.getters.isAuthenticated
       },
       {
         title: 'Log out',
         icon: 'mdi-logout',
-        path: '',
         event: userLogout,
-        hide: isAuthenticated
+        hide: store.getters.isAuthenticated
       }
     ]
   }
-])
+]))
 </script>
