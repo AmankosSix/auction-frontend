@@ -1,8 +1,8 @@
-import { AuthService } from '@/service/AuthService'
+import { AccountService } from '@/service/AccountService'
 import { useStore } from '@/store'
 import { UserMutationTypes as UMT } from '@/store/user/mutations-types'
 
-const aS = new AuthService()
+const aS = new AccountService()
 const store = useStore()
 
 export interface User {

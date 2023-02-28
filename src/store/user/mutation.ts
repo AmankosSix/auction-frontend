@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { User } from '@/helpers/authInit'
-import { State } from '@/store/user/state'
+import { State, defaultUser } from '@/store/user/state'
 import { UserMutationTypes as UMT } from '@/store/user/mutations-types'
 
 export type Mutations<S = State> = {
@@ -14,7 +14,7 @@ export const mutations: MutationTree<State> & Mutations = {
     state.user = user
   },
   [UMT.RESET_USER] (state: State) {
-    state.user = null
+    state.user = defaultUser
     state.token = ''
     localStorage.removeItem('token')
   },

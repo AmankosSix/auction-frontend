@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AuthService, SignUp, SignUpResponse } from '@/service/AuthService'
+import { AccountService, Response, SignUp } from '@/service/AccountService'
 import { useField, useForm } from 'vee-validate'
 import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
 import { useStore } from '@/store'
@@ -126,14 +126,14 @@ const password = useField('password')
 const submit = handleSubmit(async values => {
   const { name, email, phone, password } = values
   const user: SignUp = { name, email, phone, password }
-  const aS = new AuthService()
-  const res = await aS.SignUp<SignUpResponse>(user)
-  if (res.result === 'success') {
+  const aS = new AccountService()
+  const res = await aS.SignUp<Response>(user)
+  if (!('errorCode' in res.response)) {
     await router.push({ name: 'SignIn' })
 
     await store.commit(CMT.SET_SNACKBAR, {
       color: 'green',
-      message: 'You registered successfully'
+      message: res.response.message
     })
   }
 })

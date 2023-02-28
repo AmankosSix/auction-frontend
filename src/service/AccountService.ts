@@ -8,7 +8,7 @@ export type SignUp = {
   password: string
 }
 
-export interface SignUpResponse {
+export interface Response {
   message: string
 }
 
@@ -21,7 +21,12 @@ export interface SignInResponse {
   accessToken: string
 }
 
-export class AuthService extends Service {
+export interface UserUpdateInfo {
+  name: string,
+  phone: string
+}
+
+export class AccountService extends Service {
   private signUp = '/auth/sign-up'
   private signIn = '/auth/sign-in'
   private userInfo = '/user/info'
@@ -46,6 +51,14 @@ export class AuthService extends Service {
     const config = this.config<SignIn>('GET')
 
     const user: ApiResponse<T | ApiError> = await this.request<T>(this.userInfo, config)
+
+    return user
+  }
+
+  async UpdateUserInfo<T> (uuid: string, body: UserUpdateInfo): Promise<ApiResponse<T | ApiError>> {
+    const config = this.config<UserUpdateInfo>('POST', body)
+
+    const user: ApiResponse<T | ApiError> = await this.request<T>(`${this.userInfo}/${uuid}`, config)
 
     return user
   }

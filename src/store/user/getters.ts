@@ -9,7 +9,7 @@ export enum roles {
 }
 
 export type Getters = {
-  user(state: State): User | null,
+  user(state: State): User,
   isAuthenticated(state: State): boolean,
   isUser(state: State): boolean,
   isAdmin(state: State): boolean,
@@ -19,7 +19,7 @@ export type Getters = {
 
 export const getters: GetterTree<State, RootState> & Getters = {
   user: (state) => state.user,
-  isAuthenticated: (state) => !!state.user,
+  isAuthenticated: (state) => !!state.user.email,
   isUser: (state) => state.user?.role === roles.USER,
   isAdmin: (state) => state.user?.role === roles.ADMIN,
   token: (state) => state.token,

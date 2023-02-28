@@ -4,6 +4,7 @@ import AuthView from '@/views/AuthView.vue'
 import { useStore } from '@/store'
 
 const store = useStore()
+const token = localStorage.getItem('token')
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -66,11 +67,12 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.meta?.authRequired === true) {
-    if (store.getters.isAuthenticated) {
-      return next()
-    }
+router.beforeEach(async (to, from, next) => {
+  if (
+    to.meta?.authRequired === true &&
+    !store.getters.isAuthenticated &&
+    !token
+  ) {
     return next({ name: 'SignIn' })
   }
   return next()

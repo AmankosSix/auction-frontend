@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AuthService, SignIn, SignInResponse } from '@/service/AuthService'
+import { AccountService, SignIn, SignInResponse } from '@/service/AccountService'
 import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
 import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
@@ -98,7 +98,7 @@ const password = useField('password')
 const submit = handleSubmit(async values => {
   const { email, password } = values
   const user: SignIn = { email, password }
-  const aS = new AuthService()
+  const aS = new AccountService()
   const res = await aS.SignIn<SignInResponse>(user)
   if (!('errorCode' in res.response)) {
     await store.commit(CMT.SET_SNACKBAR, {

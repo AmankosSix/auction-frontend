@@ -11,7 +11,7 @@
 
   <v-spacer></v-spacer>
 
-  <v-btn class=".d-flex .d-sm-none" icon="mdi-menu" @click="$emit('update:modelValue', !modelValue)"></v-btn>
+  <v-btn class="d-flex d-md-none" icon="mdi-menu" @click="$emit('update:modelValue', !modelValue)"></v-btn>
 </template>
 
 <script lang="ts" setup>
