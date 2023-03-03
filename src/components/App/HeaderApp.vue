@@ -15,7 +15,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue'
 import logo from '@/assets/images/logo-white.svg'
 
 defineProps<{

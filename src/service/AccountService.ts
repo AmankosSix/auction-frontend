@@ -27,14 +27,21 @@ export interface UserUpdateInfo {
 }
 
 export class AccountService extends Service {
-  private signUp = '/auth/sign-up'
-  private signIn = '/auth/sign-in'
-  private userInfo = '/user/info'
+  private auth = '/auth'
+  private authStaff = '/auth-staff'
+  private signUp = '/sign-up'
+  private signIn = '/sign-in'
+  private userInfo = '/info'
+  private isStaff = false
+
+  public getPath = (value: string) => (`${this.isStaff ? this.authStaff : this.auth}${value}`)
+
+  public setStaff = (value: boolean) => (this.isStaff = value)
 
   async SignUp<T> (body: SignUp): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<SignUp>('POST', body)
 
-    const user: ApiResponse<T | ApiError> = await this.request<T>(this.signUp, config)
+    const user: ApiResponse<T | ApiError> = await this.request<T>(this.getPath(this.signUp), config)
 
     return user
   }
@@ -42,7 +49,7 @@ export class AccountService extends Service {
   async SignIn<T> (body: SignIn): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<SignIn>('POST', body)
 
-    const res: ApiResponse<T | ApiError> = await this.request<T>(this.signIn, config)
+    const res: ApiResponse<T | ApiError> = await this.request<T>(this.getPath(this.signIn), config)
 
     return res
   }
@@ -50,7 +57,7 @@ export class AccountService extends Service {
   async UserInfo<T> (): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<SignIn>('GET')
 
-    const user: ApiResponse<T | ApiError> = await this.request<T>(this.userInfo, config)
+    const user: ApiResponse<T | ApiError> = await this.request<T>(this.getPath(this.userInfo), config)
 
     return user
   }
@@ -58,7 +65,7 @@ export class AccountService extends Service {
   async UpdateUserInfo<T> (uuid: string, body: UserUpdateInfo): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<UserUpdateInfo>('POST', body)
 
-    const user: ApiResponse<T | ApiError> = await this.request<T>(`${this.userInfo}/${uuid}`, config)
+    const user: ApiResponse<T | ApiError> = await this.request<T>(this.getPath(this.userInfo + uuid), config)
 
     return user
   }

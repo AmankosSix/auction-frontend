@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref } from 'vue'
-import { GetUserInfo } from '@/helpers/authInit'
+import { GetAllRoles, GetUserInfo } from '@/helpers/authInit'
 import { useDisplay } from 'vuetify'
 
 const VSidebarApp = defineAsyncComponent(
@@ -59,5 +59,6 @@ const { mdAndUp } = useDisplay()
 const sidebar = ref(false)
 
 GetUserInfo()
+GetAllRoles()
 
 </script>

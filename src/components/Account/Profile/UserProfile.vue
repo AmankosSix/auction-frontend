@@ -32,6 +32,14 @@
             readonly
           ></v-text-field>
 
+          <v-text-field
+            v-if="isStaff"
+            :model-value="user?.role"
+            label="Role"
+            variant="underlined"
+            readonly
+          ></v-text-field>
+
         </v-container>
 
         <v-divider></v-divider>
@@ -74,6 +82,7 @@ import { GetUserInfo } from '@/helpers/authInit'
 const editMode = ref(false)
 
 const store = useStore()
+const { isStaff } = store.getters
 
 const user = computed(() => store.getters.user)
 

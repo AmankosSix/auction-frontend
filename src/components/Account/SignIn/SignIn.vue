@@ -29,6 +29,14 @@
           <p class="font-weight-light">
             New to Car Auction? <router-link :to="{ name: 'SignUp' }" class="text-blue-grey-darken-1 text-decoration-none">Create an account.</router-link>
           </p>
+
+          <v-switch
+            label="Are you an employee?"
+            color="info"
+            value="info"
+            hide-details
+            @update:modelValue="aS.setStaff(!!$event)"
+          ></v-switch>
         </v-container>
 
         <v-divider></v-divider>
@@ -59,7 +67,7 @@ import { useField, useForm } from 'vee-validate'
 import { useRouter } from 'vue-router'
 import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
 import { UserMutationTypes as UMT } from '@/store/user/mutations-types'
-import { GetUserInfo } from '@/helpers/authInit'
+import { GetAllRoles, GetUserInfo } from '@/helpers/authInit'
 import { useStore } from '@/store'
 
 const store = useStore()
@@ -95,10 +103,11 @@ const { handleSubmit, handleReset } = useForm({
 const email = useField('email')
 const password = useField('password')
 
+const aS = new AccountService()
+
 const submit = handleSubmit(async values => {
   const { email, password } = values
   const user: SignIn = { email, password }
-  const aS = new AccountService()
   const res = await aS.SignIn<SignInResponse>(user)
   if (!('errorCode' in res.response)) {
     await store.commit(CMT.SET_SNACKBAR, {
@@ -110,6 +119,7 @@ const submit = handleSubmit(async values => {
     await store.commit(UMT.SET_TOKEN, res.response.accessToken)
 
     await GetUserInfo()
+    await GetAllRoles()
 
     await router.push({ name: 'HomeComponent' })
   }

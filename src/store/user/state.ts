@@ -1,9 +1,11 @@
 import { User } from '@/helpers/authInit'
+import { Roles } from '@/service/DictionariesService'
 
 export type State = {
   user: User,
   token: string,
-  roles: string[]
+  rolesList: Roles[]
+  roles: { [key: string]: string }
 }
 
 export const defaultUser = {
@@ -17,5 +19,6 @@ export const defaultUser = {
 export const state: State = {
   user: defaultUser,
   token: localStorage.getItem('token') || '',
-  roles: ['user', 'admin']
+  rolesList: [],
+  roles: {}
 }
