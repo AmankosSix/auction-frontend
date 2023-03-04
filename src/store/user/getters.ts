@@ -8,6 +8,7 @@ export type Getters = {
   isAuthenticated(state: State): boolean,
   isUser(state: State): boolean,
   isStaff(state: State): boolean,
+  isOwner(state: State): boolean,
   token(state: State): string,
 }
 

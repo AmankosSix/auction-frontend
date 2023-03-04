@@ -7,6 +7,7 @@
       >
         <template v-slot:activator="{ props }">
           <v-list-item
+            v-if="!nav.hide"
             v-bind="props"
             :title="nav.title"
             :prepend-icon="nav.icon"
@@ -76,6 +77,12 @@ const navItems = computed<Navigation[]>(() => ([
     path: '/account',
     children: [
       {
+        title: 'Profile',
+        icon: 'mdi-badge-account',
+        path: '',
+        hide: store.getters.isAuthenticated
+      },
+      {
         title: 'Sign In',
         icon: 'mdi-login',
         path: '/sign-in',
@@ -88,15 +95,29 @@ const navItems = computed<Navigation[]>(() => ([
         hide: !store.getters.isAuthenticated
       },
       {
-        title: 'Profile',
-        icon: 'mdi-badge-account',
+        title: 'Log out',
+        icon: 'mdi-logout',
+        event: userLogout,
+        hide: store.getters.isAuthenticated
+      }
+    ]
+  },
+  {
+    title: 'Owner',
+    icon: 'mdi-account-tie',
+    path: '/owner',
+    hide: !store.getters.isOwner,
+    children: [
+      {
+        title: 'List',
+        icon: 'mdi-account-group',
         path: '',
         hide: store.getters.isAuthenticated
       },
       {
-        title: 'Log out',
-        icon: 'mdi-logout',
-        event: userLogout,
+        title: 'New Staff',
+        icon: 'mdi-account-plus-outline',
+        path: '/register',
         hide: store.getters.isAuthenticated
       }
     ]

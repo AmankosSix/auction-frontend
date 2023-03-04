@@ -56,7 +56,7 @@ const VBreadcrumbsApp = defineAsyncComponent(
 
 const { mdAndUp } = useDisplay()
 
-const sidebar = ref(false)
+const sidebar = ref(mdAndUp.value)
 
 GetUserInfo()
 GetAllRoles()

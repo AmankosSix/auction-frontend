@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import AuthView from '@/views/AuthView.vue'
+import OwnerView from '@/views/OwnerView.vue'
 import { useStore } from '@/store'
 
 const store = useStore()
@@ -36,7 +37,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '',
         name: 'UserProfile',
-        component: () => import('@/components/Account/Profile/UserProfile.vue'),
+        component: () => import('@/components/Account/UserProfile.vue'),
         meta: {
           authRequired: true,
           breadCrumb: 'Username'
@@ -45,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'sign-in',
         name: 'SignIn',
-        component: () => import('@/components/Account/SignIn/SignIn.vue'),
+        component: () => import('@/components/Account/SignIn.vue'),
         meta: {
           breadCrumb: 'Sign In'
         }
@@ -53,9 +54,38 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'sign-up',
         name: 'SignUp',
-        component: () => import('@/components/Account/SignUp/SignUp.vue'),
+        component: () => import('@/components/Account/SignUp.vue'),
         meta: {
           breadCrumb: 'Sign Up'
+        }
+      }
+    ]
+  },
+  {
+    path: '/owner',
+    name: 'OwnerView',
+    component: OwnerView,
+    meta: {
+      authRequired: true,
+      breadCrumb: 'Owner view'
+    },
+    children: [
+      {
+        path: '',
+        name: 'StaffList',
+        component: () => import('@/components/Owner/StaffList.vue'),
+        meta: {
+          authRequired: true,
+          breadCrumb: 'Staff list'
+        }
+      },
+      {
+        path: 'register',
+        name: 'StaffRegister',
+        component: () => import('@/components/Account/SignUp.vue'),
+        meta: {
+          authRequired: true,
+          breadCrumb: 'Staff Registration'
         }
       }
     ]
