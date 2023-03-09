@@ -8,10 +8,6 @@ export type SignUp = {
   password: string
 }
 
-export interface Response {
-  message: string
-}
-
 export interface SignIn {
   email: string,
   password: string
@@ -36,7 +32,7 @@ export class AccountService extends Service {
 
   public getPath = (value: string) => (`${this.isStaff ? this.authStaff : this.auth}${value}`)
 
-  public setStaff = (value: boolean) => (this.isStaff = value)
+  public setRole = (value: boolean) => (this.isStaff = value)
 
   async SignUp<T> (body: SignUp): Promise<ApiResponse<T | ApiError>> {
     const config = this.config<SignUp>('POST', body)

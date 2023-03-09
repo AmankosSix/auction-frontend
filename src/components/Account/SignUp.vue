@@ -3,8 +3,11 @@
     <v-card
       class="mx-auto"
       max-width="344"
-      title="User Registration"
     >
+      <v-card-title class="d-flex align-center">
+        <v-icon icon="mdi-account" color="blue-grey-darken-1" start></v-icon>
+        <span>{{ store.getters.isStaff ? 'Staff' : 'User' }} Registration</span>
+      </v-card-title>
       <v-container>
         <v-text-field
           v-model="name.value.value"
@@ -40,7 +43,7 @@
           clearable
         ></v-text-field>
 
-        <p class="font-weight-light">
+        <p v-if="!store.getters.isStaff" class="font-weight-light">
           Already have an account? <router-link :to="{ name: 'SignIn' }" class="text-blue-grey-darken-1 text-decoration-none">Sign in.</router-link>
         </p>
       </v-container>
@@ -56,7 +59,12 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn color="success" @click="submit">
+        <v-btn v-if="store.getters.isStaff" color="success" @click="signUpStaff">
+          Add
+          <v-icon icon="mdi-chevron-right" end></v-icon>
+        </v-btn>
+
+        <v-btn v-else color="success" @click="signUp">
           Sign up
           <v-icon icon="mdi-chevron-right" end></v-icon>
         </v-btn>
@@ -66,11 +74,14 @@
 </template>
 
 <script lang="ts" setup>
-import { AccountService, Response, SignUp } from '@/service/AccountService'
+import { AccountService, SignUp } from '@/service/AccountService'
+import { OwnerService } from '@/service/OwnerService'
+import { Response } from '@/service/types'
 import { useField, useForm } from 'vee-validate'
 import { CommonMutationTypes as CMT } from '@/store/common/mutations-types'
 import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
+import { watchEffect } from 'vue'
 
 const store = useStore()
 const router = useRouter()
@@ -123,10 +134,12 @@ const email = useField('email')
 const phone = useField('phone')
 const password = useField('password')
 
-const submit = handleSubmit(async values => {
+const aS = new AccountService()
+watchEffect(() => aS.setRole(store.getters.isStaff))
+
+const signUp = handleSubmit(async values => {
   const { name, email, phone, password } = values
   const user: SignUp = { name, email, phone, password }
-  const aS = new AccountService()
   const res = await aS.SignUp<Response>(user)
   if (!('errorCode' in res.response)) {
     await router.push({ name: 'SignIn' })
@@ -135,6 +148,21 @@ const submit = handleSubmit(async values => {
       color: 'green',
       message: res.response.message
     })
+  }
+})
+
+const signUpStaff = handleSubmit(async values => {
+  const { name, email, phone, password } = values
+  const user: SignUp = { name, email, phone, password }
+  const oS = new OwnerService()
+  const res = await oS.SignUp<SignUp>(user)
+  if (!('errorCode' in res.response)) {
+    await store.commit(CMT.SET_SNACKBAR, {
+      color: 'green',
+      message: res.response.message
+    })
+
+    handleReset()
   }
 })
 </script>

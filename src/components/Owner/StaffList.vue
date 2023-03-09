@@ -1,5 +1,5 @@
 <template>
-  <v-table>
+  <v-table class="adp-table">
     <thead>
     <tr>
       <th class="text-left">
@@ -24,11 +24,11 @@
       v-for="staff in list"
       :key="staff.uuid"
     >
-      <td>{{ staff.name }}</td>
-      <td>{{ staff.email }}</td>
-      <td>{{ staff.phone }}</td>
-      <td>{{ staff.role }}</td>
-      <td>
+      <td data-label="Name">{{ staff.name }}</td>
+      <td data-label="Email">{{ staff.email }}</td>
+      <td data-label="Phone">{{ staff.phone }}</td>
+      <td data-label="Role">{{ staff.role }}</td>
+      <td data-label="Options">
         <div class="d-flex justify-center pa-2">
           <v-btn
             icon="mdi-pencil"

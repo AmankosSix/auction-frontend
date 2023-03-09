@@ -5,13 +5,20 @@
         <v-header-app v-model="sidebar" />
       </v-app-bar>
 
+      <v-navigation-drawer app v-model="sidebar" color="surface" :temporary="!mdAndUp" :permanent="!!mdAndUp">
+        <v-sidebar-app />
+        <template v-if="store.getters.isAuthenticated" v-slot:append>
+          <div class="pa-2">
+            <v-btn block @click="userLogout">
+              Logout
+            </v-btn>
+          </div>
+        </template>
+      </v-navigation-drawer>
+
       <v-footer app class="d-flex flex-column pa-0">
         <v-footer-app />
       </v-footer>
-
-      <v-navigation-drawer app v-model="sidebar" color="surface" :temporary="!mdAndUp" :permanent="!!mdAndUp">
-        <v-sidebar-app />
-      </v-navigation-drawer>
 
 <!--      <v-navigation-drawer color="surface" location="right">-->
 <!--        <v-list>-->
@@ -30,9 +37,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue'
-import { GetAllRoles, GetUserInfo } from '@/helpers/authInit'
+import { defineAsyncComponent, onMounted, ref } from 'vue'
+import { GetAllRoles, GetUserInfo, Logout } from '@/helpers/authInit'
 import { useDisplay } from 'vuetify'
+import '@/assets/scss/index.scss'
+import { useRouter } from 'vue-router'
+import { useStore } from '@/store'
 
 const VSidebarApp = defineAsyncComponent(
   () => import('@/components/App/SidebarApp.vue')
@@ -58,7 +68,16 @@ const { mdAndUp } = useDisplay()
 
 const sidebar = ref(mdAndUp.value)
 
-GetUserInfo()
-GetAllRoles()
+const router = useRouter()
+const store = useStore()
 
+onMounted(async () => {
+  await GetAllRoles()
+  await GetUserInfo()
+})
+
+const userLogout = () => {
+  Logout()
+  router.push({ name: 'SignIn' })
+}
 </script>

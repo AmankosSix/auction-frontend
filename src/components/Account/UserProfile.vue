@@ -33,7 +33,7 @@
           ></v-text-field>
 
           <v-text-field
-            v-if="isStaff"
+            v-if="store.getters.isStaff"
             :model-value="user?.role"
             label="Role"
             variant="underlined"
@@ -72,7 +72,7 @@
 
 <script lang="ts" setup>
 
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useStore } from '@/store'
 import { useField, useForm } from 'vee-validate'
 import { AccountService, Response, UserUpdateInfo } from '@/service/AccountService'
@@ -82,13 +82,8 @@ import { GetUserInfo } from '@/helpers/authInit'
 const editMode = ref(false)
 
 const store = useStore()
-const { isStaff } = store.getters
 
 const user = computed(() => store.getters.user)
-
-onMounted(() => {
-  reset()
-})
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -140,6 +135,8 @@ const reset = () => {
     value: user.value.phone
   })
 }
+
+watchEffect(() => store.getters.isAuthenticated && reset())
 
 const close = () => {
   handleReset()

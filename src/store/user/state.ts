@@ -1,14 +1,14 @@
 import { User } from '@/helpers/authInit'
-import { Roles } from '@/service/DictionariesService'
+import { RoleResponse } from '@/service/DictionariesService'
 
 export type State = {
   user: User,
   token: string,
-  rolesList: Roles[]
+  role: RoleResponse
   roles: { [key: string]: string }
 }
 
-export const defaultUser = {
+export const defaultUser: User = {
   uuid: '',
   name: '',
   email: '',
@@ -16,9 +16,14 @@ export const defaultUser = {
   role: ''
 }
 
+export const defaultRole: RoleResponse = {
+  list: [],
+  current: ''
+}
+
 export const state: State = {
   user: defaultUser,
   token: localStorage.getItem('token') || '',
-  rolesList: [],
+  role: defaultRole,
   roles: {}
 }

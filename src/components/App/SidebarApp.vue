@@ -1,33 +1,23 @@
 <template>
   <v-list nav>
     <template v-for="nav in navItems" :key="nav.path">
-      <v-list-group
-        v-if="'children' in nav"
-        :value="nav.title"
-      >
+      <v-list-group v-if="'children' in nav">
         <template v-slot:activator="{ props }">
           <v-list-item
             v-if="!nav.hide"
             v-bind="props"
             :title="nav.title"
             :prepend-icon="nav.icon"
+            active-color="blue-grey"
           ></v-list-item>
         </template>
 
-        <template v-for="{title, icon, path, hide, event} in nav.children" :key="path">
+        <template v-for="{title, icon, path, hide} in nav.children" :key="path">
           <v-list-item
-            v-if="hide && event"
+            v-if="!hide"
             :title="title"
             :prepend-icon="icon"
-            :value="title"
-            @click="event"
-          ></v-list-item>
-          <v-list-item
-            v-else-if="hide"
-            :title="title"
-            :prepend-icon="icon"
-            :value="title"
-            :to="`${nav.path}${path}`"
+            :to="{ name: path }"
           ></v-list-item>
         </template>
       </v-list-group>
@@ -35,8 +25,8 @@
         v-else
         :prepend-icon="nav.icon"
         :title="nav.title"
-        :value="nav.path"
-        :to="nav.path"
+        :to="{ name: nav.path }"
+        active-color="blue-grey"
       ></v-list-item>
     </template>
   </v-list>
@@ -45,59 +35,43 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from '@/store'
-import { Logout } from '@/helpers/authInit'
-import { useRouter } from 'vue-router'
 
 interface Navigation {
   title: string,
   icon?: string,
   path?: string,
   hide?: boolean
-  event?: () => void,
   children?: Navigation[]
 }
 
 const store = useStore()
-const router = useRouter()
-
-const userLogout = () => {
-  Logout()
-  router.push({ name: 'SignIn' })
-}
 
 const navItems = computed<Navigation[]>(() => ([
   {
     title: 'Home',
     icon: 'mdi-home',
-    path: '/'
+    path: 'HomeComponent'
   },
   {
     title: store.getters.user?.name || 'Account',
     icon: 'mdi-account',
-    path: '/account',
     children: [
       {
         title: 'Profile',
         icon: 'mdi-badge-account',
-        path: '',
-        hide: store.getters.isAuthenticated
+        path: 'UserProfile',
+        hide: !store.getters.isAuthenticated
       },
       {
         title: 'Sign In',
         icon: 'mdi-login',
-        path: '/sign-in',
-        hide: !store.getters.isAuthenticated
+        path: 'SignIn',
+        hide: store.getters.isAuthenticated
       },
       {
         title: 'Sign Up',
         icon: 'mdi-account-plus-outline',
-        path: '/sign-up',
-        hide: !store.getters.isAuthenticated
-      },
-      {
-        title: 'Log out',
-        icon: 'mdi-logout',
-        event: userLogout,
+        path: 'SignUp',
         hide: store.getters.isAuthenticated
       }
     ]
@@ -105,20 +79,19 @@ const navItems = computed<Navigation[]>(() => ([
   {
     title: 'Owner',
     icon: 'mdi-account-tie',
-    path: '/owner',
     hide: !store.getters.isOwner,
     children: [
       {
         title: 'List',
         icon: 'mdi-account-group',
-        path: '',
-        hide: store.getters.isAuthenticated
+        path: 'StaffList',
+        hide: !store.getters.isOwner
       },
       {
         title: 'New Staff',
         icon: 'mdi-account-plus-outline',
-        path: '/register',
-        hide: store.getters.isAuthenticated
+        path: 'StaffRegister',
+        hide: !store.getters.isOwner
       }
     ]
   }

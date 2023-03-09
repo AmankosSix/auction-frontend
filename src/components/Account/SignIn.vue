@@ -35,7 +35,7 @@
             color="info"
             value="info"
             hide-details
-            @update:modelValue="aS.setStaff(!!$event)"
+            @update:modelValue="aS.setRole(!!$event)"
           ></v-switch>
         </v-container>
 
@@ -118,8 +118,8 @@ const submit = handleSubmit(async values => {
 
     await store.commit(UMT.SET_TOKEN, res.response.accessToken)
 
-    await GetUserInfo()
     await GetAllRoles()
+    await GetUserInfo()
 
     await router.push({ name: 'HomeComponent' })
   }

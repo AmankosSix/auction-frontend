@@ -17,7 +17,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '',
+        path: '/',
         name: 'HomeComponent',
         component: () => import('@/components/Home/HomeComponent.vue'),
         meta: {
@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '',
+        path: '/',
         name: 'UserProfile',
         component: () => import('@/components/Account/UserProfile.vue'),
         meta: {
@@ -71,7 +71,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '',
+        path: '/',
         name: 'StaffList',
         component: () => import('@/components/Owner/StaffList.vue'),
         meta: {

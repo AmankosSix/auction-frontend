@@ -11,3 +11,7 @@ export type ApiResponse<T> = {
   result: ApiResult,
   response: T | ApiError
 }
+
+export interface Response {
+  message: string
+}

@@ -1,7 +1,7 @@
 import { AccountService } from '@/service/AccountService'
 import { useStore } from '@/store'
 import { UserMutationTypes as UMT } from '@/store/user/mutations-types'
-import { DictionariesService, Roles } from '@/service/DictionariesService'
+import { DictionariesService, RoleResponse } from '@/service/DictionariesService'
 
 const aS = new AccountService()
 const dS = new DictionariesService()
@@ -18,8 +18,8 @@ export interface User {
 export async function GetUserInfo () {
   try {
     if (!store.getters.token) return
-    //
-    // aS.setStaff(store.getters.isStaff)
+
+    aS.setRole(store.getters.isStaff)
 
     const user = await aS.UserInfo<User>()
 
@@ -35,7 +35,7 @@ export async function GetAllRoles () {
   try {
     if (!store.getters.token) return
 
-    const res = await dS.GetAllRoles<Roles[]>()
+    const res = await dS.GetAllRoles<RoleResponse>()
 
     if ('errorCode' in res.response) throw res
 
